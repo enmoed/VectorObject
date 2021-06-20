@@ -2,7 +2,7 @@
 #define NEW_VEC_DEFAULT_SIZE 0
 #define EMPTY 0
 #define INDEX_FAIL "Error: Invalid vector index"
-#define CAP_C_NUM 2/3
+#define CAP_C_NUM 1.5
 
 
 
@@ -25,9 +25,9 @@ class vl_vector{
   reverse_iterator rend(){return reverse_iterator(begin());}
   const_reverse_iterator rbegin() const{return const_reverse_iterator(end());}
   const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
-  const_reverse_iterator rcbegin() const {
+  const_reverse_iterator crbegin() const {
     return const_reverse_iterator(end());}
-  const_reverse_iterator rcend() const {
+  const_reverse_iterator crend() const {
     return const_reverse_iterator(begin());}
 
 
@@ -43,49 +43,37 @@ class vl_vector{
   T at(int index) const;
   T &at(int index);
   void push_back(T new_item);
-  iterator insert (const_iterator it, T new_elem)
+  iterator insert (iterator it, T new_elem)
   {
     {
-      push_back(new_elem);
-      for (auto i=rbegin(); i!=(it-1); i++)
-        {
-          T *temp = i;
-          *i = *(i++);
-          *(i++) = temp;
+      if (_vec_size == _vec_cap){
+          cap_c(1);
         }
-      return (it-1);
+      size_t dist = std::distance(begin(),it);
+      std::move_backward(it, end(), end()+1);
+      _vec[dist] = new_elem;
+      return begin()+dist;
     }
   }
   template<class ForwardIterator>
-  iterator insert (const_iterator position, ForwardIterator first,
+  iterator insert (iterator position, ForwardIterator first,
                    ForwardIterator last)
   {
     size_t dist = std::distance(first,last);
-    size_t start = std::distance(cbegin(),position);
+    size_t start = std::distance(begin(),position);
     if (_vec_size+dist>_vec_cap)
       {
         cap_c(dist);
       }
     std::move_backward(begin() + start, end(), end()+dist);
     _vec_size+=dist;
-//    int i=0;
-//    while((first+i) != last)
-//      {
-//        position+i = *(first+i);
-//        i++;
-//      }
     std::copy(first, last, position);
-    return (iterator) position;
+    return position;
   }
   void pop_back();
-  iterator erase(const_iterator it)
+  iterator erase(iterator it)
   {
-    for (auto i=it; i!=(end()-1); i++)
-      {
-        T *temp = i;
-        *i = *(i++);
-        *(i++) = temp;
-      }
+    std::move(it+1, end(), it);
     pop_back();
     return it;
   }
@@ -101,12 +89,13 @@ class vl_vector{
   }
   void clear();
   T* data() const;
-  bool contains(T variable);
+  bool contains(T &variable) const;
   vl_vector<T, StaticCapacity> &operator=(const vl_vector<T, StaticCapacity>
       &vec);
-  T operator[](int index);
-  bool operator==(const vl_vector<T, StaticCapacity> &vec);
-  bool operator!=(const vl_vector<T, StaticCapacity> &vec){return
+  T operator[](int index) const;
+  T &operator[](int index);
+  bool operator==(const vl_vector<T, StaticCapacity> &vec) const;
+  bool operator!=(const vl_vector<T, StaticCapacity> &vec) const {return
                                                             !(this==vec);}
 
 
@@ -246,7 +235,7 @@ T *vl_vector<T, StaticCapacity>::data () const
 }
 
 template<typename T, size_t StaticCapacity>
-bool vl_vector<T, StaticCapacity>::contains (T variable)
+bool vl_vector<T, StaticCapacity>::contains (T &variable) const
 {
   for (int i=0; i<_vec_size; i++)
     {
@@ -258,12 +247,20 @@ bool vl_vector<T, StaticCapacity>::contains (T variable)
   return false;
 }
 template<typename T, size_t StaticCapacity>
-T vl_vector<T, StaticCapacity>::operator[] (const int index)
+T vl_vector<T, StaticCapacity>::operator[] (const int index) const
 {
   return _vec[index];
 }
+
 template<typename T, size_t StaticCapacity>
-vl_vector<T, StaticCapacity> &vl_vector<T, StaticCapacity>::operator=(const vl_vector<T, StaticCapacity> &vec)
+T &vl_vector<T, StaticCapacity>::operator[] (const int index)
+{
+  return _vec[index];
+}
+
+template<typename T, size_t StaticCapacity>
+vl_vector<T, StaticCapacity> &vl_vector<T, StaticCapacity>::operator= (const
+    vl_vector<T, StaticCapacity> &vec)
 {
   if(this == &vec)
     {
@@ -276,7 +273,7 @@ vl_vector<T, StaticCapacity> &vl_vector<T, StaticCapacity>::operator=(const vl_v
 template<typename T, size_t StaticCapacity>
 bool
 vl_vector<T, StaticCapacity>::operator == (const vl_vector<T,
-    StaticCapacity> &vec)
+    StaticCapacity> &vec) const
 {
   if (_vec_size == vec._vec_size && _vec_cap== vec._vec_cap)
     {
