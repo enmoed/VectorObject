@@ -3,7 +3,7 @@
 #define EMPTY 0
 #define INDEX_FAIL "Error: Invalid vector index"
 #define CAP_C_NUM 1.5
-#include "iostream"
+#include "algorithm"
 
 
 
@@ -81,7 +81,7 @@ class vl_vector{
   {
     size_t dist = std::distance(first,last);
     size_t start = std::distance(cbegin(),first);
-    std::move_backward(first, last, end()+dist);
+    std::move(last, cend(), first);
     _vec_size-=dist;
     if(_vec_cap>StaticCapacity && _vec_size<=StaticCapacity)
       {
