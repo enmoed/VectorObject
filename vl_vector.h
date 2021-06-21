@@ -95,12 +95,12 @@ class vl_vector{
   T* data() const;
   bool contains(const T &variable) const;
   vl_vector<T, StaticCapacity> &operator=(const vl_vector<T, StaticCapacity>
-      &vec);
+                                          &vec);
   T operator[](int index) const;
   T &operator[](int index);
   bool operator==(const vl_vector<T, StaticCapacity> &vec) const;
   bool operator!=(const vl_vector<T, StaticCapacity> &vec) const {return
-                                                            !((*this)==vec);}
+        !((*this)==vec);}
 
 
  private:
@@ -115,11 +115,11 @@ class vl_vector{
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity>::vl_vector () :_vec_size(NEW_VEC_DEFAULT_SIZE),
-_vec_cap(StaticCapacity), _vec(_stat_vec){}
+                                            _vec_cap(StaticCapacity), _vec(_stat_vec){}
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity>::vl_vector (const vl_vector<T,
-                                         StaticCapacity> &cpy_vec) :
+    StaticCapacity> &cpy_vec) :
     _vec_size(NEW_VEC_DEFAULT_SIZE),
     _vec_cap(StaticCapacity), _vec(_stat_vec)
 {
@@ -129,8 +129,8 @@ vl_vector<T, StaticCapacity>::vl_vector (const vl_vector<T,
 template<typename T, size_t StaticCapacity>
 template<class ForwardIterator>
 vl_vector<T, StaticCapacity>::vl_vector
-(ForwardIterator first,ForwardIterator last) : _vec_size(NEW_VEC_DEFAULT_SIZE),
-                                               _vec_cap(StaticCapacity), _vec(_stat_vec)
+    (ForwardIterator first,ForwardIterator last) : _vec_size(NEW_VEC_DEFAULT_SIZE),
+                                                   _vec_cap(StaticCapacity), _vec(_stat_vec)
 {
   insert(begin(), first, last);
 }
@@ -195,6 +195,10 @@ T &vl_vector<T, StaticCapacity>::at (int index)
 template<typename T, size_t StaticCapacity>
 void vl_vector<T, StaticCapacity>::pop_back ()
 {
+  if (_vec_size == EMPTY)
+    {
+      return;
+    }
   _vec_size--;
   if(_vec_cap>StaticCapacity && _vec_size<=StaticCapacity)
     {
@@ -256,7 +260,7 @@ T &vl_vector<T, StaticCapacity>::operator[] (const int index)
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity> &vl_vector<T, StaticCapacity>::operator= (const
-    vl_vector<T, StaticCapacity> &vec)
+                                                                       vl_vector<T, StaticCapacity> &vec)
 {
   if(this == &vec)
     {
@@ -271,7 +275,7 @@ bool
 vl_vector<T, StaticCapacity>::operator == (const vl_vector<T,
     StaticCapacity> &vec) const
 {
-  if (_vec_size == vec._vec_size && _vec_cap== vec._vec_cap)
+  if (_vec_size == vec._vec_size)
     {
       for (size_t i=0; i<_vec_size; i++)
         {
