@@ -260,7 +260,7 @@ T &vl_vector<T, StaticCapacity>::operator[] (const int index)
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity> &vl_vector<T, StaticCapacity>::operator= (const
-                                                                       vl_vector<T, StaticCapacity> &vec)
+    vl_vector<T, StaticCapacity> &vec)
 {
   if(this == &vec)
     {
