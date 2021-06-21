@@ -206,7 +206,6 @@ void vl_vector<T, StaticCapacity>::pop_back ()
       restore_vec();
     }
 }
-
 template<typename T, size_t StaticCapacity>
 void vl_vector<T, StaticCapacity>::restore_vec ()
 {
