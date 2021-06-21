@@ -82,7 +82,7 @@ class vl_vector{
     size_t start = std::distance(cbegin(),first);
     std::move_backward(first, last, end()+dist);
     _vec_size-=dist;
-    if(_vec_size<=StaticCapacity)
+    if(_vec_cap>StaticCapacity && _vec_size<=StaticCapacity)
       {
         restore_vec();
       }
