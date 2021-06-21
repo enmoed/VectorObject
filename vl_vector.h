@@ -115,7 +115,7 @@ class vl_vector{
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity>::vl_vector () :_vec_size(NEW_VEC_DEFAULT_SIZE),
-                                            _vec_cap(StaticCapacity), _vec(_stat_vec){}
+_vec_cap(StaticCapacity), _vec(_stat_vec){}
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity>::vl_vector (const vl_vector<T,
@@ -129,8 +129,8 @@ vl_vector<T, StaticCapacity>::vl_vector (const vl_vector<T,
 template<typename T, size_t StaticCapacity>
 template<class ForwardIterator>
 vl_vector<T, StaticCapacity>::vl_vector
-    (ForwardIterator first,ForwardIterator last) : _vec_size(NEW_VEC_DEFAULT_SIZE),
-                                                   _vec_cap(StaticCapacity), _vec(_stat_vec)
+    (ForwardIterator first,ForwardIterator last) : _vec_size
+    (NEW_VEC_DEFAULT_SIZE), _vec_cap(StaticCapacity), _vec(_stat_vec)
 {
   insert(begin(), first, last);
 }
