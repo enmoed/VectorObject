@@ -3,7 +3,8 @@
 #define EMPTY 0
 #define INDEX_FAIL "Error: Invalid vector index"
 #define CAP_C_NUM 1.5
-#include "algorithm"
+#include "iostream"
+
 
 
 
@@ -40,18 +41,19 @@ class vl_vector{
   ~vl_vector(){if(_vec_cap>StaticCapacity){delete [] _vec;}}
   size_t size() const {return _vec_size;}
   size_t capacity() const {return _vec_cap;}
-  bool empty() const {return _vec_size <= EMPTY;}
+  bool empty() const {return _vec_size == EMPTY;}
   T at(int index) const;
   T &at(int index);
-  void push_back(T new_item);
+  void push_back(const T &new_item);
   iterator insert (const_iterator it, T new_elem)
   {
     size_t dist = std::distance(cbegin(),it);
     if (_vec_size == _vec_cap){
         cap_c(1);
       }
-    std::move_backward(it, cend(), end()+1);
+    std::move_backward(begin()+dist, end(), end()+1);
     _vec[dist] = new_elem;
+    _vec_size+=1;
     return begin()+dist;
   }
   template<class ForwardIterator>
@@ -81,7 +83,7 @@ class vl_vector{
   {
     size_t dist = std::distance(first,last);
     size_t start = std::distance(cbegin(),first);
-    std::move(last, cend(), first);
+    std::move(begin()+start+dist, end(), begin()+start);
     _vec_size-=dist;
     if(_vec_cap>StaticCapacity && _vec_size<=StaticCapacity)
       {
@@ -105,6 +107,7 @@ class vl_vector{
   size_t _vec_size;
   size_t _vec_cap;
   T *_vec;
+  T _stat_vec[StaticCapacity];
   void cap_c(int elem_amount);
   void restore_vec();
 
@@ -112,20 +115,14 @@ class vl_vector{
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity>::vl_vector () :_vec_size(NEW_VEC_DEFAULT_SIZE),
-_vec_cap(StaticCapacity)
-{
-  T stack_arr[StaticCapacity];
-  _vec = stack_arr;
-}
+_vec_cap(StaticCapacity), _vec(_stat_vec){}
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity>::vl_vector (const vl_vector<T,
                                          StaticCapacity> &cpy_vec) :
     _vec_size(NEW_VEC_DEFAULT_SIZE),
-    _vec_cap(StaticCapacity)
+    _vec_cap(StaticCapacity), _vec(_stat_vec)
 {
-  T stack_arr[StaticCapacity];
-  _vec = stack_arr;
   insert(begin(), cpy_vec.cbegin(), cpy_vec.cend());
 }
 
@@ -133,28 +130,25 @@ template<typename T, size_t StaticCapacity>
 template<class ForwardIterator>
 vl_vector<T, StaticCapacity>::vl_vector
 (ForwardIterator first,ForwardIterator last) : _vec_size(NEW_VEC_DEFAULT_SIZE),
-                                               _vec_cap(StaticCapacity)
+                                               _vec_cap(StaticCapacity), _vec(_stat_vec)
 {
-  T stack_arr[StaticCapacity];
-  _vec = stack_arr;
   insert(begin(), first, last);
 }
 
 template<typename T, size_t StaticCapacity>
 vl_vector<T, StaticCapacity>::vl_vector (const size_t count, T v):
-    _vec_size(count),
-    _vec_cap(StaticCapacity)
+    _vec_size(NEW_VEC_DEFAULT_SIZE),
+    _vec_cap(StaticCapacity), _vec(_stat_vec)
 {
-  T stack_arr[StaticCapacity];
-  _vec = stack_arr;
-  if (_vec_size > _vec_cap){
+  if (_vec_size + count> _vec_cap){
       cap_c(count);
     }
+  _vec_size+= count;
   std::fill(begin(), end(), v);
 }
 
 template<typename T, size_t StaticCapacity>
-void vl_vector<T, StaticCapacity>::push_back (T new_item)
+void vl_vector<T, StaticCapacity>::push_back (const T &new_item)
 {
   if (_vec_size == _vec_cap){
       cap_c(1);
@@ -176,13 +170,13 @@ void vl_vector<T, StaticCapacity>::cap_c (int elem_amount)
       delete [] _vec;
     }
   _vec = temp;
-  _vec_cap = (CAP_C_NUM)*(_vec_size+elem_amount);
+  _vec_cap = int((CAP_C_NUM)*(_vec_size+elem_amount));
 }
 
 template<typename T, size_t StaticCapacity>
 T vl_vector<T, StaticCapacity>::at (int index) const
 {
-  if (index >= (int) _vec_cap || index < EMPTY)
+  if (index >= (int) _vec_size || index < EMPTY)
     {
       throw std::out_of_range(INDEX_FAIL);
     }
@@ -191,7 +185,7 @@ T vl_vector<T, StaticCapacity>::at (int index) const
 template<typename T, size_t StaticCapacity>
 T &vl_vector<T, StaticCapacity>::at (int index)
 {
-  if (index >= (int) _vec_cap || index < EMPTY)
+  if (index >= (int) _vec_size || index < EMPTY)
     {
       throw std::out_of_range(INDEX_FAIL);
     }
@@ -210,13 +204,12 @@ void vl_vector<T, StaticCapacity>::pop_back ()
 template<typename T, size_t StaticCapacity>
 void vl_vector<T, StaticCapacity>::restore_vec ()
 {
-  T temp[StaticCapacity];
   for (size_t i=0; i<StaticCapacity; i++)
     {
-      temp[i] = _vec[i];
+      _stat_vec[i] = _vec[i];
     }
   delete [] _vec;
-  _vec = temp;
+  _vec = _stat_vec;
   _vec_cap = StaticCapacity;
 }
 template<typename T, size_t StaticCapacity>
@@ -225,8 +218,7 @@ void vl_vector<T, StaticCapacity>::clear ()
   if(_vec_size>StaticCapacity)
     {
       delete [] _vec;
-      T stack_arr[StaticCapacity];
-      _vec = stack_arr;
+      _vec = _stat_vec;
     }
   _vec_size = EMPTY;
   _vec_cap = StaticCapacity;
