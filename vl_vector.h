@@ -3,6 +3,7 @@
 #define EMPTY 0
 #define INDEX_FAIL "Error: Invalid vector index"
 #define CAP_C_NUM 1.5
+#include "iostream"
 
 
 
