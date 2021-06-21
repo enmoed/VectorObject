@@ -201,7 +201,7 @@ template<typename T, size_t StaticCapacity>
 void vl_vector<T, StaticCapacity>::pop_back ()
 {
   _vec_size--;
-  if(_vec_size<=StaticCapacity)
+  if(_vec_cap>StaticCapacity && _vec_size<=StaticCapacity)
     {
       restore_vec();
     }
@@ -225,8 +225,11 @@ void vl_vector<T, StaticCapacity>::clear ()
   if(_vec_size>StaticCapacity)
     {
       delete [] _vec;
+      T stack_arr[StaticCapacity];
+      _vec = stack_arr;
     }
-  (*this) = vl_vector<T, StaticCapacity>();
+  _vec_size = EMPTY;
+  _vec_cap = StaticCapacity;
 }
 
 template<typename T, size_t StaticCapacity>
