@@ -11,40 +11,161 @@
 template<typename T, size_t StaticCapacity=DFLT_SIZE>
 class vl_vector{
  public:
-
+/**
+ * iterator typedefs
+ */
   typedef T* iterator;
   typedef const T* const_iterator;
   typedef std::reverse_iterator<iterator> reverse_iterator;
   typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+/**
+ * begin iterator
+ * @return
+ */
   iterator begin() {return _vec;}
+
+/**
+ * end iterator
+ * @return
+ */
   iterator end() {return _vec+_vec_size;}
+
+/**
+ * begin iterator for const instance
+ * @return
+ */
   const_iterator begin() const{return _vec;}
+
+/**
+ * end iterator for const instance
+ * @return
+ */
   const_iterator end() const {return _vec+_vec_size;}
+
+/**
+ * const begin iterator
+ * @return
+ */
   const_iterator cbegin() const {return _vec;}
+
+/**
+ * const end iterator
+ * @return
+ */
   const_iterator cend() const {return _vec+_vec_size;}
+
+/**
+ * reverse begin iterator
+ * @return
+ */
   reverse_iterator rbegin(){return reverse_iterator(end());}
+
+/**
+ * reverse end iterator
+ * @return
+ */
   reverse_iterator rend(){return reverse_iterator(begin());}
+
+/**
+ * reverse begin iterator for const instance
+ * @return
+ */
   const_reverse_iterator rbegin() const{return const_reverse_iterator(end());}
+
+/**
+ * reverse end iterator for const instance
+ * @return
+ */
   const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
+
+/**
+ * const reverse begin iterator
+ * @return
+ */
   const_reverse_iterator crbegin() const {
     return const_reverse_iterator(end());}
+
+/**
+ * const reverse end iterator
+ * @return
+ */
   const_reverse_iterator crend() const {
     return const_reverse_iterator(begin());}
 
-
+/**
+ * Default constructor of vector
+ */
   vl_vector();
+
+/**
+ * Copy constructor
+ * @param cpy_vec
+ */
   vl_vector(const vl_vector<T, StaticCapacity> &cpy_vec);
+
+/**
+ * Constructor that sets initial vector to variables in iterator
+ * @tparam ForwardIterator typedef Forward Iterator
+ * @param first iterator that points to first variable
+ * @param last iterator that points to the end of the iteration
+ */
   template<class ForwardIterator>
   vl_vector(ForwardIterator first, ForwardIterator last);
+
+/**
+ * Constructor that sets "count" elements of vector to "v"
+ * @param count number of elements
+ * @param v element to set to
+ */
   vl_vector(size_t count, T v);
+
+/**
+ * Destructor
+ */
   ~vl_vector(){if(_vec_cap>StaticCapacity){delete [] _vec;}}
+
+/**
+ * @return amount of elements inserted in vector
+ */
   size_t size() const {return _vec_size;}
+
+/**
+ * @return current capacity of vector
+ */
   size_t capacity() const {return _vec_cap;}
+
+/**
+ * @return boolean depending on if vector currently has elements
+ */
   bool empty() const {return _vec_size == EMPTY;}
+
+/**
+ * Gets element in vector at index given
+ * @param index
+ * @return returns copy of element
+ */
   T at(int index) const;
+
+/**
+* Gets element in vector at index given
+ * @param index
+ * @return returns element
+ */
   T &at(int index);
+
+/**
+ * adds new item to back of vector
+ * @param new_item
+ */
   void push_back(const T &new_item);
+
+/**
+ * inserts new item at iterator position given
+ * @param it iterator of vector
+ * @param new_elem
+ * @return iterator pointing to new item
+ */
   iterator insert (const_iterator it, T new_elem)
   {
     size_t dist = std::distance(cbegin(),it);
@@ -56,6 +177,15 @@ class vl_vector{
     _vec_size+=1;
     return begin()+dist;
   }
+
+/**
+ * inserts amount of elements at iterator given
+ * @tparam ForwardIterator
+ * @param position iterator pointing at where to insert new elements
+ * @param first starting iterator of elements to insert
+ * @param last end iterator of elements to insert
+ * @return iterator pointing to beginning of new elements inserted
+ */
   template<class ForwardIterator>
   iterator insert (const_iterator position, ForwardIterator first,
                    ForwardIterator last)
@@ -71,7 +201,17 @@ class vl_vector{
     std::copy(first, last, begin() + start);
     return begin() + start;
   }
+
+/**
+ * removes element from end of vector
+ */
   void pop_back();
+
+/**
+ * erases element at iterator given
+ * @param it iterator
+ * @return iterator pointing to next element
+ */
   iterator erase(const_iterator it)
   {
     size_t start = std::distance(cbegin(),it);
@@ -79,6 +219,13 @@ class vl_vector{
     pop_back();
     return begin()+start;
   }
+
+/**
+ * erases elements between two first and last iterators
+ * @param first iterator
+ * @param last iterator
+ * @return iterator pointing to next element
+ */
   iterator erase(const_iterator first, const_iterator last)
   {
     size_t dist = std::distance(first,last);
@@ -91,14 +238,55 @@ class vl_vector{
       }
     return begin()+start;
   }
+
+/**
+ * resets contents of vector
+ */
   void clear();
+
+/**
+ * @return pointer vector elements
+ */
   T* data() const;
+
+/**
+ * checks if variable is in vector
+ * @param variable
+ * @return boolean depending on if it is in vector
+ */
   bool contains(const T &variable) const;
+
+/**
+ * equal operator for vector
+ * @param vec
+ * @return reference of vector
+ */
   vl_vector<T, StaticCapacity> &operator=(const vl_vector<T, StaticCapacity>
                                           &vec);
+/**
+ * @param index
+ * @return copy of element at index in vector
+ */
   T operator[](int index) const;
+
+/**
+ * @param index
+ * @return reference to element at index in vector
+ */
   T &operator[](int index);
+
+/**
+ * checks if two vectors have same elements
+ * @param vec
+ * @return boolean depending on if it does
+ */
   bool operator==(const vl_vector<T, StaticCapacity> &vec) const;
+
+/**
+ * checks if two vectors do not have same elements
+ * @param vec
+ * @return boolean depending on if it does
+ */
   bool operator!=(const vl_vector<T, StaticCapacity> &vec) const {return
         !((*this)==vec);}
 
@@ -108,7 +296,16 @@ class vl_vector{
   size_t _vec_cap;
   T *_vec;
   T _stat_vec[StaticCapacity];
+
+/**
+ * enlarges vector when needed according to special calculation
+ * @param elem_amount amount of new elements to be added to vector
+ */
   void cap_c(int elem_amount);
+
+/**
+ * restores vector to stack memory
+ */
   void restore_vec();
 
 };
