@@ -20,7 +20,7 @@ class vl_string : public vl_vector<char, StaticCapacity> {
  * @param word initializes string with word
  */
   vl_string(const char *word): vl_vector<char, StaticCapacity>
-      (word,word+strlen(word)+1){}
+      (word,word+std::strlen(word)+1){}
 /**
  * @return size of string
  */
@@ -83,8 +83,8 @@ class vl_string : public vl_vector<char, StaticCapacity> {
         return *this;
       }
     clear();
-    vl_vector<char, StaticCapacity>::insert(this->cbegin(), vec.cbegin(), vec.cend
-    ()-1);
+    vl_vector<char, StaticCapacity>::insert(this->cbegin(), vec.cbegin(),
+                                            vec.cend()-1);
     return *this;
   }
 /**
@@ -106,7 +106,7 @@ class vl_string : public vl_vector<char, StaticCapacity> {
   vl_string &operator+= (const char *word)
   {
     vl_vector<char, StaticCapacity>::insert(this->cend()-1, word,
-                                            word+(strlen(word)));
+                                            word+(std::strlen(word)));
     return *this;
   }
 /**
@@ -138,7 +138,7 @@ class vl_string : public vl_vector<char, StaticCapacity> {
   vl_string operator+ (const char *word) const
   {
     vl_string<StaticCapacity> temp(*this);
-    temp.insert(temp.cend()-1, word, word+(strlen(word)));
+    temp.insert(temp.cend()-1, word, word+(std::strlen(word)));
     return temp;
   }
 /**
@@ -160,6 +160,6 @@ class vl_string : public vl_vector<char, StaticCapacity> {
   {
     return this->begin();
   }
-  
+
 };
 #endif //_VL_STRING_H_
