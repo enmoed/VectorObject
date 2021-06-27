@@ -42,7 +42,9 @@ class vl_string : public vl_vector<char, StaticCapacity> {
  */
   void push_back (const char &letter) override
   {
-    vl_vector<char, StaticCapacity>::insert(this->cend()-1, letter);
+    vl_vector<char, StaticCapacity>::pop_back();
+    vl_vector<char, StaticCapacity>::push_back(letter);
+    vl_vector<char, StaticCapacity>::push_back('\0');
   }
 /**
  * Removes letter from end of string
