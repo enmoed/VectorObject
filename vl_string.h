@@ -1,6 +1,7 @@
 #ifndef _VL_STRING_H_
 #define _VL_STRING_H_
 #include "vl_vector.h"
+#include "cstring"
 
 template<size_t StaticCapacity = DFLT_SIZE>
 class vl_string : public vl_vector<char, StaticCapacity> {
@@ -94,8 +95,8 @@ class vl_string : public vl_vector<char, StaticCapacity> {
  */
   vl_string &operator+= (const vl_string<StaticCapacity> &vec)
   {
-    vl_vector<char, StaticCapacity>::insert(this->cend()-1, vec.cbegin(), vec.cend
-        ()-1);
+    vl_vector<char, StaticCapacity>::insert(this->cend()-1, vec.cbegin(),
+                                            vec.cend()-1);
     return *this;
   }
 /**

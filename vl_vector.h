@@ -126,7 +126,7 @@ class vl_vector{
 /**
  * Destructor
  */
-  ~vl_vector(){if(_vec_cap>StaticCapacity){delete [] _vec;}}
+  virtual ~vl_vector(){if(_vec_cap>StaticCapacity){delete [] _vec;}}
 
  /**
  * @return amount of elements inserted in vector
