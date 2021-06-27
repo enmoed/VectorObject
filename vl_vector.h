@@ -1,3 +1,5 @@
+#ifndef _VL_VECTOR_H_
+#define _VL_VECTOR_H_
 #define DFLT_SIZE 16
 #define NEW_VEC_DEFAULT_SIZE 0
 #define EMPTY 0
@@ -71,7 +73,8 @@ class vl_vector{
  * reverse begin iterator for const instance
  * @return
  */
-  const_reverse_iterator rbegin() const{return const_reverse_iterator(end());}
+  const_reverse_iterator rbegin() const{return const_reverse_iterator
+  (end());}
 
 /**
  * reverse end iterator for const instance
@@ -125,10 +128,10 @@ class vl_vector{
  */
   ~vl_vector(){if(_vec_cap>StaticCapacity){delete [] _vec;}}
 
-/**
+ /**
  * @return amount of elements inserted in vector
  */
-  size_t size() const {return _vec_size;}
+  virtual size_t size() const {return _vec_size;}
 
 /**
  * @return current capacity of vector
@@ -138,7 +141,7 @@ class vl_vector{
 /**
  * @return boolean depending on if vector currently has elements
  */
-  bool empty() const {return _vec_size == EMPTY;}
+  virtual bool empty() const {return _vec_size == EMPTY;}
 
 /**
  * Gets element in vector at index given
@@ -158,7 +161,7 @@ class vl_vector{
  * adds new item to back of vector
  * @param new_item
  */
-  void push_back(const T &new_item);
+  virtual void push_back(const T &new_item);
 
 /**
  * inserts new item at iterator position given
@@ -205,7 +208,7 @@ class vl_vector{
 /**
  * removes element from end of vector
  */
-  void pop_back();
+  virtual void pop_back();
 
 /**
  * erases element at iterator given
@@ -215,7 +218,7 @@ class vl_vector{
   iterator erase(const_iterator it)
   {
     size_t start = std::distance(cbegin(),it);
-    std::move(begin()+start+1, end(), begin()+start);
+    std::move(cbegin()+start+1, cend(), begin()+start);
     pop_back();
     return begin()+start;
   }
@@ -230,7 +233,7 @@ class vl_vector{
   {
     size_t dist = std::distance(first,last);
     size_t start = std::distance(cbegin(),first);
-    std::move(begin()+start+dist, end(), begin()+start);
+    std::move(cbegin()+start+dist, cend(), begin()+start);
     _vec_size-=dist;
     if(_vec_cap>StaticCapacity && _vec_size<=StaticCapacity)
       {
@@ -242,7 +245,7 @@ class vl_vector{
 /**
  * resets contents of vector
  */
-  void clear();
+  virtual void clear();
 
 /**
  * @return pointer vector elements
@@ -486,7 +489,5 @@ vl_vector<T, StaticCapacity>::operator == (const vl_vector<T,
   return false;
 }
 
-#ifndef _VL_VECTOR_H_
-#define _VL_VECTOR_H_
 
 #endif //_VL_VECTOR_H_
