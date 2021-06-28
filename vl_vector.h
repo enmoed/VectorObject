@@ -250,8 +250,12 @@ class vl_vector{
 /**
  * @return pointer vector elements
  */
-  T* data() const;
+  const T* data() const;
 
+/**
+ * @return pointer vector elements
+ */
+  T* data();
 /**
  * checks if variable is in vector
  * @param variable
@@ -429,7 +433,7 @@ void vl_vector<T, StaticCapacity>::clear ()
 }
 
 template<typename T, size_t StaticCapacity>
-T *vl_vector<T, StaticCapacity>::data () const
+const T *vl_vector<T, StaticCapacity>::data () const
 {
   return _vec;
 }
@@ -488,6 +492,10 @@ vl_vector<T, StaticCapacity>::operator == (const vl_vector<T,
     }
   return false;
 }
-
+template<typename T, size_t StaticCapacity>
+T *vl_vector<T, StaticCapacity>::data ()
+{
+  return _vec;
+}
 
 #endif //_VL_VECTOR_H_

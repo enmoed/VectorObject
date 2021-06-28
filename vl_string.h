@@ -149,7 +149,7 @@ class vl_string : public vl_vector<char, StaticCapacity> {
  * @param letter char to be added
  * @return new string vector
  */
-  vl_string operator+ (const char &letter) const
+  vl_string operator+ (const char &letter)
   {
     vl_string<StaticCapacity> temp(*this);
     temp.insert(temp.cend()-1, letter);
